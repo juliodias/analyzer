@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  localstack:
+    image: "localstack/localstack-full"
+    container_name: "analyzer-localstack"
+    ports:
+      - 4566:4566
+    environment:
+      - SERVICES=sqs, sns
+    volumes:
+      - ./aws:/docker-entrypoint-initaws.d
+
+  prometheus:
+    image: "prom/prometheus"
+    container_name: "analyzer-prometheus"
+    ports:
+      - 9090:9090
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+
+  grafana:
+    image: "grafana/grafana"
+    container_name: "analyzer-grafana"
+    ports:
+      - 3000:3000
